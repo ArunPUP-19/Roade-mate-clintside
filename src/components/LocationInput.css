@@ -1,0 +1,136 @@
+.location-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.location-input-wrapper.disabled-wrapper {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.location-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.location-input {
+  padding-left: 36px !important;
+  padding-right: 38px !important; /* Space for the locate button */
+  width: 100%;
+}
+
+.location-input.no-locate {
+  padding-right: 16px !important; /* Normal padding when locate button is removed */
+}
+
+.location-input:disabled {
+  cursor: not-allowed;
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.locate-btn {
+  position: absolute;
+  right: 8px;
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.locate-btn:hover {
+  background: var(--surface-hover);
+  color: var(--primary-hover);
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Custom Dropdown Styles */
+.suggestions-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background-color: var(--background-start, #0f172a);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.15));
+  border-radius: var(--radius-md, 8px);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+  list-style: none;
+  padding: 6px 0;
+  max-height: 260px;
+  overflow-y: auto;
+  z-index: 1000;
+  backdrop-filter: blur(12px);
+}
+
+@media (prefers-color-scheme: dark) {
+  .suggestions-dropdown {
+    background-color: #1e293b;
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+}
+
+.suggestions-header {
+  padding: 6px 14px 4px 14px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--primary, #38bdf8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 4px;
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  cursor: pointer;
+  color: var(--text-main, #f8fafc);
+  transition: background-color 0.15s ease;
+  font-size: 0.9rem;
+}
+
+.suggestion-item:hover {
+  background-color: rgba(56, 189, 248, 0.12);
+  color: #38bdf8;
+}
+
+.suggestion-icon {
+  color: var(--text-muted, #94a3b8);
+  flex-shrink: 0;
+}
+
+.suggestion-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.suggestion-item.no-match {
+  cursor: default;
+  color: var(--text-muted, #94a3b8);
+  font-style: italic;
+  font-size: 0.85rem;
+}
+
+.suggestion-item.no-match:hover {
+  background-color: transparent;
+}

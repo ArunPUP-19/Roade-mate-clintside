@@ -1,0 +1,37 @@
+.home-container {
+  padding-bottom: 64px;
+}
+
+.hero-section {
+  padding: 80px 0 64px;
+}
+
+.hero-section h1 {
+  margin-bottom: 24px;
+}
+
+.max-w-2xl {
+  max-width: 42rem;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 24px;
+  margin-top: 32px;
+}
+
+@media (min-width: 768px) {
+  .options-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
