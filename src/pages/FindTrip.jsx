@@ -3,6 +3,8 @@ import { Search, Loader2, Car, Hand, MapPin, ChevronDown, ChevronRight } from 'l
 import LocationInput from '../components/LocationInput';
 import TripCard from '../components/TripCard';
 import RequestCard from '../components/RequestCard';
+import { searchTrips } from '../api/tripApi';
+import { fetchAllRequests } from '../api/requestApi';
 import './Forms.css';
 import './FindTrip.css';
 
@@ -44,18 +46,10 @@ const FindTrip = () => {
     setIsLoading(true);
 
     try {
-      const queryParams = new URLSearchParams();
-      if (searchFrom) queryParams.append('from', searchFrom);
-      if (searchTo) queryParams.append('to', searchTo);
-      if (searchDate) queryParams.append('date', searchDate);
-
-      const [tripsRes, requestsRes] = await Promise.all([
-        fetch(`http://localhost:5000/api/trips?${queryParams.toString()}`),
-        fetch(`http://localhost:5000/api/requests`)
+      const [tripsData, requestsData] = await Promise.all([
+        searchTrips({ from: searchFrom, to: searchTo, date: searchDate }),
+        fetchAllRequests()
       ]);
-
-      const tripsData = await tripsRes.json();
-      const requestsData = await requestsRes.json();
 
       if (tripsData.trips) setTrips(tripsData.trips);
 

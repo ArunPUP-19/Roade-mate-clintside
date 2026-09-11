@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import LocationInput from '../components/LocationInput';
 import { INDIAN_STATES } from '../data/indianStatesAndCities';
+import { createRequest } from '../api/requestApi';
 import { CheckCircle2, Loader2 } from 'lucide-react';
 import './Forms.css';
 
@@ -46,26 +47,17 @@ const IWantToGo = () => {
         ? destination
         : `${destination}, ${destinationState}`;
 
-      const res = await fetch('http://localhost:5000/api/requests', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          ...getAuthHeaders() 
-        },
-        body: JSON.stringify({
-          startingLocation: formattedStarting,
-          destination: formattedDestination,
-          date,
-          preferredTime
-        })
-      });
+      const { res, data } = await createRequest({
+        startingLocation: formattedStarting,
+        destination: formattedDestination,
+        date,
+        preferredTime
+      }, getAuthHeaders());
 
       if (res.status === 401 || res.status === 403) {
         alert('Your session has expired. Please log in again.');
         return;
       }
-
-      const data = await res.json().catch(() => ({}));
 
       if (res.ok) {
         setSuccessMessage('Your ride request has been published!');

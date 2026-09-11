@@ -2,6 +2,11 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
+  getTripById, joinTrip, leaveTrip,
+  confirmParticipant, rejectParticipant,
+  lockTrip, startTrip, completeTrip, cancelTrip
+} from '../api/tripApi';
+import {
   MapPin, Calendar, Clock, User, Car, Star, CheckCircle, XCircle,
   Shield, Lock, Play, Flag, ArrowLeft, Loader2, Users, AlertCircle
 } from 'lucide-react';
@@ -37,9 +42,7 @@ const TripDetail = () => {
 
   const fetchTrip = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/trips/${tripId}`);
-      if (!res.ok) throw new Error('Trip not found');
-      const data = await res.json();
+      const data = await getTripById(tripId);
       setTrip(data);
     } catch (err) {
       setError(err.message);
@@ -52,15 +55,12 @@ const TripDetail = () => {
     fetchTrip();
   }, [tripId]);
 
-  const doAction = async (url, method = 'POST') => {
+  const doAction = async (actionFn) => {
     setActionLoading(true);
     setError('');
     setSuccessMsg('');
     try {
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
-      });
+      const { res, data } = await actionFn();
 
       if (res.status === 401 || res.status === 403) {
         setError('Your session has expired. Please log in again.');
@@ -68,7 +68,6 @@ const TripDetail = () => {
         return;
       }
 
-      const data = await res.json().catch(() => ({}));
       if (!res.ok) {
         const msg = data?.error?.message || data?.message || data?.error || 'Action failed';
         throw new Error(msg);
@@ -84,14 +83,14 @@ const TripDetail = () => {
     }
   };
 
-  const handleJoin = () => doAction(`http://localhost:5000/api/trips/${tripId}/join`);
-  const handleLeave = () => doAction(`http://localhost:5000/api/trips/${tripId}/leave`, 'DELETE');
-  const handleConfirm = (pid) => doAction(`http://localhost:5000/api/trips/${tripId}/participants/${pid}/confirm`, 'PUT');
-  const handleReject = (pid) => doAction(`http://localhost:5000/api/trips/${tripId}/participants/${pid}/reject`, 'PUT');
-  const handleLock = () => doAction(`http://localhost:5000/api/trips/${tripId}/lock`, 'PUT');
-  const handleStart = () => doAction(`http://localhost:5000/api/trips/${tripId}/start`, 'PUT');
-  const handleComplete = () => doAction(`http://localhost:5000/api/trips/${tripId}/complete`, 'PUT');
-  const handleCancel = () => doAction(`http://localhost:5000/api/trips/${tripId}/cancel`, 'PUT');
+  const handleJoin = () => doAction(() => joinTrip(tripId, getAuthHeaders()));
+  const handleLeave = () => doAction(() => leaveTrip(tripId, getAuthHeaders()));
+  const handleConfirm = (pid) => doAction(() => confirmParticipant(tripId, pid, getAuthHeaders()));
+  const handleReject = (pid) => doAction(() => rejectParticipant(tripId, pid, getAuthHeaders()));
+  const handleLock = () => doAction(() => lockTrip(tripId, getAuthHeaders()));
+  const handleStart = () => doAction(() => startTrip(tripId, getAuthHeaders()));
+  const handleComplete = () => doAction(() => completeTrip(tripId, getAuthHeaders()));
+  const handleCancel = () => doAction(() => cancelTrip(tripId, getAuthHeaders()));
 
   if (loading) {
     return (
